@@ -1,222 +1,437 @@
-% This is the Reed College LaTeX thesis template. Most of the work
-% for the document class was done by Sam Noble (SN), as well as this
-% template. Later comments etc. by Ben Salzberg (BTS). Additional
-% restructuring and APA support by Jess Youngberg (JY).
-% Your comments and suggestions are more than welcome; please email
-% them to cus@reed.edu
-%
-% See http://web.reed.edu/cis/help/latex.html for help. There are a
-% great bunch of help pages there, with notes on
-% getting started, bibtex, etc. Go there and read it if you're not
-% already familiar with LaTeX.
-%
-% Any line that starts with a percent symbol is a comment.
-% They won't show up in the document, and are useful for notes
-% to yourself and explaining commands.
-% Commenting also removes a line from the document;
-% very handy for troubleshooting problems. -BTS
+% Document type, global settings, and packages
 
-% As far as I know, this follows the requirements laid out in
-% the 2002-2003 Senior Handbook. Ask a librarian to check the
-% document before binding. -SN
-
-%%
-%% Preamble
-%%
-% \documentclass{<something>} must begin each LaTeX document
-\documentclass[12pt,twoside]{reedthesis}
-% Packages are extensions to the basic LaTeX functions. Whatever you
-% want to typeset, there is probably a package out there for it.
-% Chemistry (chemtex), screenplays, you name it.
-% Check out CTAN to see: http://www.ctan.org/
-%%
-\usepackage{graphicx,latexsym}
-\usepackage{amsmath}
-\usepackage{amssymb,amsthm}
-\usepackage{longtable,booktabs,setspace}
-\usepackage{chemarr} %% Useful for one reaction arrow, useless if you're not a chem major
-\usepackage[hyphens]{url}
-% Added by CII
-\usepackage{hyperref}
-\usepackage{lmodern}
-\usepackage{float}
-\floatplacement{figure}{H}
-% End of CII addition
-\usepackage{rotating}
-
-% Next line commented out by CII
-%%% \usepackage{natbib}
-% Comment out the natbib line above and uncomment the following two lines to use the new
-% biblatex-chicago style, for Chicago A. Also make some changes at the end where the
-% bibliography is included.
-%\usepackage{biblatex-chicago}
-%\bibliography{thesis}
+\documentclass[12pt]{report}   %12 point font for Times New Roman
+\usepackage{graphicx}  %for images and plots
+\usepackage[letterpaper, left=1in, right=1in, top=1in, bottom=1in]{geometry}
+\usepackage{setspace}  %use this package to set linespacing as desired
+\usepackage{times}  %set Times New Roman as the font
+\usepackage[explicit]{titlesec}  %title control and formatting
+\usepackage[titles]{tocloft}  %table of contents control and formatting
+\usepackage[backend=bibtex, sorting=none, bibstyle=ieee]{biblatex}  %reference manager
+\usepackage[bookmarks=true, hidelinks]{hyperref}
+\usepackage{appendix}  %for appendices
+\usepackage{rotating}  %for rotated, landscape images
+\usepackage{ulem}  %for underlined section titles
+\usepackage{textcomp} % for text symbols such as copyright etc. 
+\usepackage{indentfirst} % To indent the first line of every paragraph
+\usepackage{booktabs,array,arydshln} %for better table formatting. 
+\usepackage{amsmath} %for formula formatting
+\usepackage[T1]{fontenc} % improved font encoding
+\usepackage[utf8]{inputenc} % for better handling of non-ASCII characters
+%\usepackage{newtxtext} % font choice
+\usepackage{newtxmath} 
+%\usepackage{lmodern} % font choice 
 
 
-% Added by CII (Thanks, Hadley!)
-% Use ref for internal links
-\renewcommand{\hyperref}[2][???]{\autoref{#1}}
-\def\chapterautorefname{Chapter}
-\def\sectionautorefname{Section}
-\def\subsectionautorefname{Subsection}
-% End of CII addition
+% Bibliography
+%Add your bibliography file here
+\bibliography{references}
 
-% Added by CII
-\usepackage{caption}
-\captionsetup{width=5in}
-% End of CII addition
+% prevent certain fields in references from printing in bibliography
+\AtEveryBibitem{\clearfield{issn}}
+\AtEveryBibitem{\clearlist{issn}}
 
-% \usepackage{times} % other fonts are available like times, bookman, charter, palatino
+\AtEveryBibitem{\clearfield{language}}
+\AtEveryBibitem{\clearlist{language}}
 
-% Syntax highlighting #22
-$if(highlighting-macros)$
-  $highlighting-macros$
-$endif$
+\AtEveryBibitem{\clearfield{doi}}
+\AtEveryBibitem{\clearlist{doi}}
 
-% To pass between YAML and LaTeX the dollar signs are added by CII
-\title{$title$}
-\author{$author$}
-% The month and year that you submit your FINAL draft TO THE LIBRARY (May or December)
-\date{$date$}
-\division{$division$}
-\advisor{$advisor$}
-\institution{$institution$}
-\degree{$degree$}
-%If you have two advisors for some reason, you can use the following
-% Uncommented out by CII
-$if(altadvisor)$
-\altadvisor{$altadvisor$}
-$endif$
-% End of CII addition
+\AtEveryBibitem{\clearfield{url}}
+\AtEveryBibitem{\clearlist{url}}
 
-%%% Remember to use the correct department!
-\department{$department$}
-% if you're writing a thesis in an interdisciplinary major,
-% uncomment the line below and change the text as appropriate.
-% check the Senior Handbook if unsure.
-%\thedivisionof{The Established Interdisciplinary Committee for}
-% if you want the approval page to say "Approved for the Committee",
-% uncomment the next line
-%\approvedforthe{Committee}
+\AtEveryBibitem{%
+  \ifentrytype{online}
+    {}
+    {\clearfield{urlyear}\clearfield{urlmonth}\clearfield{urlday}}}
 
-% Added by CII
-%%% Copied from knitr
-%% maxwidth is the original width if it's less than linewidth
-%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
 
-%Added by @MyKo101, code provided by @GerbrichFerdinands
-$if(csl-refs)$
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newenvironment{cslreferences}%
-  {$if(csl-hanging-indent)$\setlength{\parindent}{0pt}%
-  \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces$endif$}%
-  {\par}
-$endif$
-
-\renewcommand{\contentsname}{Table of Contents}
-% End of CII addition
-
-\setlength{\parskip}{0pt}
-
-% Added by CII
-$if(space_between_paragraphs)$
-  %\setlength{\parskip}{\baselineskip}
-  \usepackage[parfill]{parskip}
-$endif$
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-\Acknowledgements{
-$acknowledgements$
-}
-
-\Dedication{
-$dedication$
-}
-
-\Preface{
-$preface$
-}
-
-\Abstract{
-$abstract$
-}
-
-$for(header-includes)$
-	$header-includes$
-$endfor$
-% End of CII addition
-%%
-%% End Preamble
-%%
-%
+% Start of Dissertatio Document
 
 \begin{document}
+\doublespacing  %set line spacing to double by default through out the document. This can be overwritten when necessary
 
-% Everything below added by CII
-$if(title)$
-  \maketitle
-$endif$
+% Title Page (No page number)
+%This is the tile page of your dissertation
+%Please type below title of your dissertation and your name
+%change the year if neccessary
 
-\frontmatter % this stuff will be roman-numbered
-\pagestyle{empty} % this removes page numbers from the frontmatter
+\begin{titlepage}
+\begin{center}
 
-$if(acknowledgements)$
-  \begin{acknowledgements}
-    $acknowledgements$
-  \end{acknowledgements}
-$endif$
-
-$if(preface)$
-  \begin{preface}
-    $preface$
-  \end{preface}
-$endif$
-
-$if(toc)$
-  \hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$black$endif$}
-  \setcounter{tocdepth}{$toc-depth$}
-  \tableofcontents
-$endif$
-
-$if(lot)$
-  \listoftables
-$endif$
-
-$if(lof)$
-  \listoffigures
-$endif$
-
-$if(abstract)$
-  \begin{abstract}
-    $abstract$
-  \end{abstract}
-$endif$
-
-$if(dedication)$
-  \begin{dedication}
-    $dedication$
-  \end{dedication}
-$endif$
-
-\mainmatter % here the regular arabic numbering starts
-\pagestyle{fancyplain} % turns page numbering back on
-
-$body$
+\begin{singlespacing}
+\vspace*{6\baselineskip}
+[Dissertation Title]\\
+\vspace{3\baselineskip}
+[Full Name]\\
+\vspace{18\baselineskip}
+Submitted in partial fulfillment of the\\
+requirements for the degree of\\
+Doctor of Philosophy\\
+under the Executive Committee\\
+of the Graduate School of Arts and Sciences\\
+\vspace{3\baselineskip}
+COLUMBIA UNIVERSITY\\
+\vspace{3\baselineskip}
+\the\year
+\vfill
 
 
-% Index?
+\end{singlespacing}
 
-\end{document}
+\end{center}
+\end{titlepage}
 
+
+
+
+
+
+
+\currentpdfbookmark{Title Page}{titlePage}  %add PDF bookmark for this page
+
+% Copyright  Page (No page number)
+
+\begin{titlepage}
+\begin{singlespacing}
+\begin{center}
+
+\vspace*{35\baselineskip}
+
+\textcopyright  \,  \the\year\\
+\vspace{\baselineskip}	
+[Author Name]\\
+\vspace{\baselineskip}	
+All Rights Reserved
+\end{center}
+\vfill
+
+\end{singlespacing}
+\end{titlepage}
+
+
+% Abstract (No page number)
+\pagenumbering{gobble}
+%Abstract Page
+
+\begin{titlepage}
+\begin{center}
+
+\vspace*{5\baselineskip}
+\textbf{\large Abstract}
+
+[Dissertation Title]
+
+[Full Name]
+\end{center}
+\begin{flushleft}
+\hspace{10mm}Abstract of dissertation. In the abstract, you must (1) present the problem of the thesis/dissertation, (2) discuss the materials and methods used, and (3) state the conclusions reached. Individual chapters should not have abstracts.Abstract of dissertation. In the abstract, you must (1) present the problem of the thesis/dissertation, (2) discuss the materials and methods used, and (3) state the conclusions reached. Individual chapters should not have abstracts.
+
+\end{flushleft}
+\vspace*{\fill}
+\end{titlepage}
+
+
+
+% Table of Contents
+
+% Format for Table of Contents
+\pagenumbering{roman}
+\setcounter{page}{1} 
+\renewcommand{\cftchapdotsep}{\cftdotsep}  %add dot separators
+\renewcommand{\cftchapfont}{\normalfont}  %set title font weight that shows up on TOC
+\renewcommand{\cftchappagefont}{}  %set page number font weight
+\renewcommand{\cftchappresnum}{Chapter }
+\renewcommand{\cftchapaftersnum}{:}
+\renewcommand{\cftchapnumwidth}{5em}
+\renewcommand{\cftchapafterpnum}{\vskip\baselineskip} %set correct spacing for entries in single space environment
+\renewcommand{\cftsecafterpnum}{\vskip\baselineskip}  %set correct spacing for entries in single space environment
+\renewcommand{\cftsubsecafterpnum}{\vskip\baselineskip} %set correct spacing for entries in single space environment
+\renewcommand{\cftsubsubsecafterpnum}{\vskip\baselineskip} %set correct spacing for entries in single space environment
+
+%format title font size and position (this also applys to list of figures and list of tables)
+\titleformat{\chapter}[display]
+{\normalfont\bfseries\filcenter}{\chaptertitlename\ \thechapter}{0pt}{\large{#1}}
+
+\renewcommand\contentsname{Table of Contents}
+
+\begin{singlespace}
+\tableofcontents
+\end{singlespace}
+
+\currentpdfbookmark{Table of Contents}{TOC}
+
+\clearpage
+
+% List of figures and tables (Remove this if you do not have any tables or figures)
+
+\addcontentsline{toc}{chapter}{List of Tables}
+\begin{singlespace}
+	\setlength\cftbeforetabskip{\baselineskip}  %manually set spacing between entries
+	\listoftables
+\end{singlespace}
+
+\clearpage
+
+\addcontentsline{toc}{chapter}{List of Figures}
+\begin{singlespace}
+\setlength\cftbeforefigskip{\baselineskip}  %manually set spacing between entries
+\listoffigures
+\end{singlespace}
+
+\clearpage
+
+% Acknowledgments
+
+\addcontentsline{toc}{chapter}{Acknowledgments}
+
+\clearpage
+\begin{center}
+
+\vspace*{5\baselineskip}
+\textbf{\large Acknowledgements}
+\end{center}
+
+
+\begin{flushleft}
+\hspace{10mm}Insert your acknowledgements text here. This page is optional, you may delete it if not needed. 
+\end{flushleft}
+\clearpage
+
+%\pagenumbering{gobble}  %remove page number on summary page
+
+
+
+
+% Dedication
+\addcontentsline{toc}{chapter}{Dedication}
+%Dedication page. 
+%This page is optional
+
+
+\begin{center}
+
+\vspace*{5\baselineskip}
+\textbf{\large Dedication}
+\end{center}
+
+
+\begin{flushleft}
+\hspace{10mm}Insert your dedication text here. This page is optional, you may delete it if not needed. 
+\end{flushleft}
+
+
+%\pagenumbering{gobble}  %remove page number on summary page
+
+
+
+
+%%%%%%%
+%	            %
+% Chapters   %
+%                   %
+%%%%%%%
+
+% General formatting for chapters, appendix, etc. 
+
+
+% reset page numbering for rest of document 
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1} 
+
+% Preface %This is optional
+\addcontentsline{toc}{chapter}{Introduction or Preface}
+%Preface page. 
+%This page is optional
+
+
+\begin{center}
+
+\vspace*{5\baselineskip}
+\textbf{\large Introduction or Preface}
+\end{center}
+
+
+\begin{flushleft}
+\hspace{10mm}Insert your preface text here if applicable. This page is optional, you may delete it if not needed. If you delete this page make sure to move page counter comment in thesis.tex to correct location. 
+\end{flushleft}
+
+
+%\pagenumbering{gobble}  %remove page number on summary page
+
+
+
+
+% Adjust chapter title formatting
+\titleformat{\chapter}[display]
+{\normalfont\bfseries\filcenter}{}{0pt}{\large\chaptertitlename\ \large\thechapter : \large\bfseries\filcenter{#1}}  
+\titlespacing*{\chapter}
+  {0pt}{0pt}{30pt}	%controls vertical margins on title
+  
+% Adjust section title formatting
+\titleformat{\section}{\normalfont\bfseries}{\thesection}{1em}{#1}
+
+% Adjust subsection title formatting
+\titleformat{\subsection}{\normalfont}{\thesubsection}{0em}{\hspace{1em}#1}
+
+% Below is a subsubsection, uncomment it if you need to use it
+%\titleformat{\subsubsection}{\normalfont\itshape}{\thesubsection}{1em}{#1}
+
+%%%%%%%%%%%%%%%%
+% Chapter 1
+%%%%%%%%%%%%%%%%
+\chapter{Introduction and Background}
+Add chapter 1 text here. 
+
+
+\section{Footnotes: Two ways of adding to your text}
+
+Here is an example of how to use footnotes. It is possible to write footnotes directly in the text itself \footnote{By using footnote command and writing your note in the curly brackets}. Or it is possible to mark the location of a foot note with footnote mark command\footnotemark \, then you can write the footnote in its own line for ease of reading. 
+
+\footnotetext{You then use footnotetext command and then write you note in as if you are using regular footnote command as we did previously.}
+
+\section{Other section of first chapter}
+
+Add chapter 1 text here. 
+
+% This is a figure
+
+
+Add chapter 1 text here. 
+
+% This is a table
+%If you are having issues with \midline use \hline insteadn and remove booktabs package from thesis.tex
+
+\begin{table}
+\caption{This is an example Table.}
+\begin{center}
+\begin{tabular}{ccc}
+x & f(x) & g(x) \\
+%\hline
+\midrule
+1 & 6 & 4  \\
+2 & 6 & 3  \\
+3 & 6 & 2  \\
+4 & 6 & 2  \\
+\label{Table in Chapter 1}
+\end{tabular}
+\end{center}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%
+% Chapter 2
+%%%%%%%%%%%%%%%%
+
+\chapter{Technical Approach}
+Add chapter 2 text here. 
+
+\section{Some Technical Approach}
+
+Add chapter 2 text here. 
+
+
+\section{Another Technical Approach}
+
+Add chapter 2 text here. 
+
+
+\subsection{Example Subsection}
+
+Add chapter 2 text here. 
+
+
+
+
+
+%%%%%%%%%%%%%%%%
+% Chapter 3
+%%%%%%%%%%%%%%%%
+
+\chapter{Results}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+%%%%%%%%%%%%%%%%
+% Chapter 4
+%%%%%%%%%%%%%%%%
+\chapter{Discussion}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum..
+
+
+
+
+%%%%%%%%%%%%%%%%
+% Conclusion
+%%%%%%%%%%%%%%%%
+
+
+\begin{center}
+\pagebreak
+\vspace*{5\baselineskip}
+\textbf{\large Conclusion or Epilogue}
+\end{center}
+
+
+\begin{flushleft}
+\hspace{10mm}Use this page for your epilogue or conclusion if applicable; please use only one of the titles for this page. Otherwise, you may delete it.
+\end{flushleft}
+
+
+%\pagenumbering{gobble}  %remove page number on summary page
+
+
+
+\addcontentsline{toc}{chapter}{Conclusion or Epilogue}
+
+
+%%%%%%%%%%%%%%%%
+% References
+%%%%%%%%%%%%%%%%
+
+\titleformat{\chapter}[display]
+{\normalfont\bfseries\filcenter}{}{0pt}{\large\bfseries\filcenter{#1}}  % Reset title format for Reference section. (It is different from Chapter titles)
+\titlespacing*{\chapter}
+  {0pt}{0pt}{30pt}
+
+\begin{singlespace}  % use single-line spacing for multi-line text within a single reference
+	\setlength\bibitemsep{\baselineskip}  %manually set separataion betwen items in bibliography to double space
+	\printbibliography[title={References}]
+\end{singlespace}
+
+\addcontentsline{toc}{chapter}{References}  %add References section to Table of Contents
+
+%%%%%%%%%%%%%%%%
+% Appendices
+%%%%%%%%%%%%%%%%
+
+%Readjust Title format for Appendicies
+\titleformat{\chapter}[display]
+{\normalfont\bfseries\filcenter}{}{0pt}{\large\chaptertitlename\ \large\thechapter : \large\bfseries\filcenter{#1}}  
+\titlespacing*{\chapter}
+  {0pt}{0pt}{30pt}	%controls vertical margins on title
+  
+% Adjust section title formatting
+\titleformat{\section}{\normalfont\bfseries}{\thesection}{1em}{#1}
+
+% Adjust subsection title formatting
+\titleformat{\subsection}{\normalfont}{\thesubsection}{0em}{\hspace{1em}#1}
+
+\begin{appendices}
+
+%Some Table of Contents entry formatting
+\addtocontents{toc}{\protect\renewcommand{\protect\cftchappresnum}{\appendixname\space}}
+\addtocontents{toc}{\protect\renewcommand{\protect\cftchapnumwidth}{6em}}
+
+%Begin individual appendices, separated as chapters
+
+\chapter{ Experimental Equipment}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+\chapter{Data Processing}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+\end{appendices}
+
+\end{document} 
